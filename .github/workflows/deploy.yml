@@ -28,15 +28,29 @@ jobs:
         uses: actions/setup-node@v4
         with:
           node-version: "20"
+          cache: 'npm'
       
       - name: Setup Pages
         uses: actions/configure-pages@v4
         
-      - name: Install dependencies
+      - name: Clean install dependencies
         run: |
+          rm -rf node_modules
+          rm -rf .next
+          npm cache clean --force
           npm install
-          npm install --save-dev typescript @types/react @types/node
-        
+          
+      - name: Install TypeScript dependencies
+        run: |
+          npm install --save-dev typescript@latest @types/react@latest @types/node@latest @types/react-dom@latest
+          npm install --save-dev @typescript-eslint/parser @typescript-eslint/eslint-plugin
+          
+      - name: Create tsconfig if not exists
+        run: |
+          if [ ! -f tsconfig.json ]; then
+            npx tsc --init
+          fi
+          
       - name: Build with Next.js
         run: |
           npm run build
