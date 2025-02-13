@@ -14,9 +14,6 @@ concurrency:
   group: "pages"
   cancel-in-progress: true
 
-env:
-  NODE_ENV: production
-
 jobs:
   build:
     runs-on: ubuntu-latest
@@ -28,7 +25,6 @@ jobs:
         uses: actions/setup-node@v4
         with:
           node-version: "20"
-          cache: 'npm'
       
       - name: Setup Pages
         uses: actions/configure-pages@v4
@@ -40,26 +36,9 @@ jobs:
           npm cache clean --force
           npm install
           
-      - name: Install TypeScript dependencies
-        run: |
-          npm install --save-dev typescript@latest @types/react@latest @types/node@latest @types/react-dom@latest
-          npm install --save-dev @typescript-eslint/parser @typescript-eslint/eslint-plugin
-          
-      - name: Create tsconfig if not exists
-        run: |
-          if [ ! -f tsconfig.json ]; then
-            npx tsc --init
-          fi
-          
       - name: Build with Next.js
-        run: |
-          npm run build
+        run: npm run build
         env:
-          TWILIO_ACCOUNT_SID: ${{ secrets.TWILIO_ACCOUNT_SID }}
-          TWILIO_AUTH_TOKEN: ${{ secrets.TWILIO_AUTH_TOKEN }}
-          TWILIO_PHONE_NUMBER: ${{ secrets.TWILIO_PHONE_NUMBER }}
-          EMAIL_USER: ${{ secrets.EMAIL_USER }}
-          EMAIL_PASSWORD: ${{ secrets.EMAIL_PASSWORD }}
           NEXT_PUBLIC_BASE_PATH: /Genesisgrouphome
         
       - name: Upload artifact
