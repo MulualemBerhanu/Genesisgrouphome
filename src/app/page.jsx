@@ -24,9 +24,9 @@ export default function Home() {
   const [currentImageIndex, setCurrentImageIndex] = useState(0);
   const [isLightboxOpen, setIsLightboxOpen] = useState(false);
   const [selectedImage, setSelectedImage] = useState('');
-  const [currentBranch, setCurrentBranch] = useState<'Group Home 1' | 'Group Home 2' | ''>('');
+  const [currentBranch, setCurrentBranch] = useState('');
   const [isFullScreen, setIsFullScreen] = useState(false);
-  const [formStatus, setFormStatus] = useState<{ show: boolean; message: string; type: 'success' | 'error' }>({
+  const [formStatus, setFormStatus] = useState({
     show: false,
     message: '',
     type: 'success'
@@ -37,7 +37,7 @@ export default function Home() {
   const totalImages = {
     'Group Home 1': 50,
     'Group Home 2': 50
-  } as const;
+  };
 
   useEffect(() => {
     const handleScroll = () => {
@@ -52,14 +52,14 @@ export default function Home() {
     window.scrollTo({ top: 0, behavior: 'smooth' });
   };
 
-  const handleImageClick = (branch: 'Group Home 1' | 'Group Home 2', index: number) => {
+  const handleImageClick = (branch, index) => {
     setCurrentBranch(branch);
     setCurrentImageIndex(index);
     setSelectedImage(`/images/${branch}/image${index}.jpg`);
     setIsLightboxOpen(true);
   };
 
-  const handlePrevImage = (e: React.MouseEvent) => {
+  const handlePrevImage = (e) => {
     e.stopPropagation();
     if (currentImageIndex > 1 && currentBranch) {
       const newIndex = currentImageIndex - 1;
@@ -68,7 +68,7 @@ export default function Home() {
     }
   };
 
-  const handleNextImage = (e: React.MouseEvent) => {
+  const handleNextImage = (e) => {
     e.stopPropagation();
     if (currentBranch) {
       const maxImages = totalImages[currentBranch];
@@ -84,10 +84,10 @@ export default function Home() {
     setIsFullScreen(!isFullScreen);
   };
 
-  const handleKeyPress = (e: KeyboardEvent) => {
+  const handleKeyPress = (e) => {
     if (isLightboxOpen) {
-      if (e.key === 'ArrowLeft') handlePrevImage(e as unknown as React.MouseEvent);
-      if (e.key === 'ArrowRight') handleNextImage(e as unknown as React.MouseEvent);
+      if (e.key === 'ArrowLeft') handlePrevImage(e);
+      if (e.key === 'ArrowRight') handleNextImage(e);
       if (e.key === 'Escape') setIsLightboxOpen(false);
       if (e.key === 'f') toggleFullScreen();
     }
@@ -98,8 +98,7 @@ export default function Home() {
     return () => window.removeEventListener('keydown', handleKeyPress);
   }, [isLightboxOpen, currentImageIndex, currentBranch]);
 
-  // Update the Gallery Grid sections with proper array mapping
-  const renderGalleryGrid = (branch: 'Group Home 1' | 'Group Home 2') => {
+  const renderGalleryGrid = (branch) => {
     return Array.from({ length: 6 }, (_, i) => (
       <motion.div
         key={`${branch}-${i + 1}`}
@@ -127,7 +126,7 @@ export default function Home() {
     ));
   };
 
-  const handleContactSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
+  const handleContactSubmit = async (e) => {
     e.preventDefault();
     setIsSubmitting(true);
 
@@ -153,17 +152,14 @@ export default function Home() {
         throw new Error('Failed to send message');
       }
 
-      // Show success message
       setFormStatus({
         show: true,
         message: '✅ Your message has been sent! We\'ll get back to you soon.',
         type: 'success'
       });
 
-      // Reset form
       form.reset();
 
-      // Hide success message after 5 seconds
       setTimeout(() => {
         setFormStatus(prev => ({ ...prev, show: false }));
       }, 5000);

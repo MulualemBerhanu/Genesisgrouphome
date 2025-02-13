@@ -1,4 +1,3 @@
-import type { Metadata } from "next";
 import { Roboto, Merriweather } from "next/font/google";
 import "./globals.css";
 
@@ -16,16 +15,12 @@ const merriweather = Merriweather({
   variable: '--font-merriweather',
 });
 
-export const metadata: Metadata = {
+export const metadata = {
   title: "Genesis Group Home LLC - Professional Home Care Services",
   description: "Providing compassionate and professional home care services with a focus on quality of life and personalized care plans.",
 };
 
-export default function RootLayout({
-  children,
-}: Readonly<{
-  children: React.ReactNode;
-}>) {
+export default function RootLayout({ children }) {
   return (
     <html lang="en" className={`${roboto.variable} ${merriweather.variable}`}>
       <body className="bg-[#FFFDE7]">{children}</body>
