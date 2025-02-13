@@ -3,11 +3,10 @@ const nextConfig = {
   output: 'export',
   images: {
     unoptimized: true,
-    loader: 'custom',
-    loaderFile: './image-loader.js',
   },
-  basePath: process.env.NEXT_PUBLIC_BASE_PATH || '',
-  assetPrefix: process.env.NEXT_PUBLIC_BASE_PATH || '',
+  basePath: '/Genesisgrouphome',
+  assetPrefix: '/Genesisgrouphome/',
+  trailingSlash: true,
 }
 
 module.exports = nextConfig 
