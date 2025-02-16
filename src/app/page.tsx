@@ -26,18 +26,36 @@ export default function Home() {
   const [selectedImage, setSelectedImage] = useState('');
   const [currentBranch, setCurrentBranch] = useState<'Group Home 1' | 'Group Home 2' | ''>('');
   const [isFullScreen, setIsFullScreen] = useState(false);
-  const [formStatus, setFormStatus] = useState<{ show: boolean; message: string; type: 'success' | 'error' }>({
-    show: false,
-    message: '',
-    type: 'success'
+
+  const [formData, setFormData] = useState({
+    name: '',
+    email: '',
+    phone: '',
+    message: ''
   });
+
+  const [formErrors, setFormErrors] = useState({
+    name: '',
+    email: '',
+    phone: '',
+    message: ''
+  });
+
+  const [showSuccessPopup, setShowSuccessPopup] = useState(false);
   const [isSubmitting, setIsSubmitting] = useState(false);
+
+  const [isGalleryLightboxOpen, setIsGalleryLightboxOpen] = useState(false);
+  const [selectedGalleryBranch, setSelectedGalleryBranch] = useState<'Group Home 1' | 'Group Home 2' | ''>('');
+  const [galleryImages, setGalleryImages] = useState<string[]>([]);
+  const IMAGES_PER_PAGE = 8;
 
   // Number of images for each branch
   const totalImages = {
-    'Group Home 1': 50,
-    'Group Home 2': 50
+    'Group Home 1': 24,
+    'Group Home 2': 16
   } as const;
+
+  const [currentPage, setCurrentPage] = useState(1);
 
   useEffect(() => {
     const handleScroll = () => {
@@ -127,55 +145,204 @@ export default function Home() {
     ));
   };
 
-  const handleContactSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
+  // Validation functions
+  const validateName = (name: string) => {
+    if (!name.trim()) return 'Name is required';
+    if (name.length < 2) return 'Name must be at least 2 characters long';
+    if (!/^[a-zA-Z\s]*$/.test(name)) return 'Name can only contain letters and spaces';
+    return '';
+  };
+
+  const validateEmail = (email: string) => {
+    if (!email.trim()) return 'Email is required';
+    const emailRegex = /^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$/;
+    return emailRegex.test(email) ? '' : 'Please enter a valid email address';
+  };
+
+  const validatePhone = (phone: string) => {
+    if (!phone.trim()) return 'Phone number is required';
+    
+    // Remove all non-digit characters for the raw number check
+    const digitsOnly = phone.replace(/\D/g, '');
+    
+    // Check if we have exactly 10 digits
+    if (digitsOnly.length !== 10) {
+      return 'Phone number must be exactly 10 digits';
+    }
+
+    // Check if the format matches any of the allowed patterns:
+    // (123) 456-7890, 123-456-7890, or 1234567890
+    const phoneRegex = /^(\(\d{3}\)\s?\d{3}-\d{4}|\d{3}-\d{3}-\d{4}|\d{10})$/;
+    
+    if (!phoneRegex.test(phone)) {
+      return 'Please enter a valid US phone number (e.g., (123) 456-7890, 123-456-7890, or 1234567890)';
+    }
+    
+    return '';
+  };
+
+  const validateMessage = (message: string) => {
+    if (!message.trim()) return 'Message is required';
+    if (message.length < 10) return 'Message must be at least 10 characters long';
+    if (message.length > 500) return 'Message must not exceed 500 characters';
+    if (message.includes('http://') || message.includes('https://') || message.includes('www.')) {
+      return 'Links are not allowed in the message';
+    }
+    return '';
+  };
+
+  const sanitizeInput = (input: string) => {
+    // Basic XSS prevention by escaping HTML special characters
+    return input
+      .replace(/&/g, '&amp;')
+      .replace(/</g, '&lt;')
+      .replace(/>/g, '&gt;')
+      .replace(/"/g, '&quot;')
+      .replace(/'/g, '&#039;');
+  };
+
+  const formatPhoneNumber = (value: string) => {
+    // Remove all non-digit characters
+    const digitsOnly = value.replace(/\D/g, '');
+    
+    // Format the number based on length
+    if (digitsOnly.length <= 3) {
+      return digitsOnly;
+    } else if (digitsOnly.length <= 6) {
+      return `(${digitsOnly.slice(0, 3)}) ${digitsOnly.slice(3)}`;
+    } else {
+      return `(${digitsOnly.slice(0, 3)}) ${digitsOnly.slice(3, 6)}-${digitsOnly.slice(6, 10)}`;
+    }
+  };
+
+  const handleInputChange = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => {
+    const { name, value } = e.target;
+    
+    // Apply phone number formatting if it's the phone field
+    if (name === 'phone') {
+      const formattedValue = formatPhoneNumber(value);
+      setFormData(prev => ({ ...prev, [name]: formattedValue }));
+    } else {
+      setFormData(prev => ({ ...prev, [name]: value }));
+    }
+  };
+
+  const handleInputBlur = (e: React.FocusEvent<HTMLInputElement | HTMLTextAreaElement>) => {
+    const { name, value } = e.target;
+    let error = '';
+    
+    switch (name) {
+      case 'name':
+        error = validateName(value);
+        break;
+      case 'email':
+        error = validateEmail(value);
+        break;
+      case 'phone':
+        error = validatePhone(value);
+        break;
+      case 'message':
+        error = validateMessage(value);
+        break;
+    }
+    
+    setFormErrors(prev => ({ ...prev, [name]: error }));
+  };
+
+  const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-    setIsSubmitting(true);
-
-    const form = e.currentTarget;
-    const formData = new FormData(form);
-    const data = {
-      name: formData.get('name'),
-      email: formData.get('email'),
-      phone: formData.get('phone'),
-      message: formData.get('message')
+    
+    // Validate all fields
+    const errors = {
+      name: validateName(formData.name),
+      email: validateEmail(formData.email),
+      phone: validatePhone(formData.phone),
+      message: validateMessage(formData.message)
     };
-
+    
+    setFormErrors(errors);
+    
+    // Check if there are any errors
+    if (Object.values(errors).some(error => error !== '')) {
+      return;
+    }
+    
+    // Sanitize input before submission
+    const sanitizedData = {
+      name: sanitizeInput(formData.name),
+      email: sanitizeInput(formData.email),
+      phone: sanitizeInput(formData.phone),
+      message: sanitizeInput(formData.message)
+    };
+    
+    setIsSubmitting(true);
+    
     try {
-      const response = await fetch('/api/contact', {
+      const response = await fetch('https://formspree.io/f/xbldzbkj', {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
         },
-        body: JSON.stringify(data),
+        body: JSON.stringify(sanitizedData),
       });
-
-      if (!response.ok) {
-        throw new Error('Failed to send message');
+      
+      if (response.ok) {
+        setShowSuccessPopup(true);
+        setFormData({ name: '', email: '', phone: '', message: '' });
+        setFormErrors({ name: '', email: '', phone: '', message: '' });
       }
-
-      // Show success message
-      setFormStatus({
-        show: true,
-        message: '✅ Your message has been sent! We\'ll get back to you soon.',
-        type: 'success'
-      });
-
-      // Reset form
-      form.reset();
-
-      // Hide success message after 5 seconds
-      setTimeout(() => {
-        setFormStatus(prev => ({ ...prev, show: false }));
-      }, 5000);
-
     } catch (error) {
-      setFormStatus({
-        show: true,
-        message: '❌ Failed to send message. Please try again.',
-        type: 'error'
-      });
+      console.error('Error submitting form:', error);
     } finally {
       setIsSubmitting(false);
+    }
+  };
+
+  // Function to handle opening the gallery lightbox
+  const handleViewMorePhotos = (branch: 'Group Home 1' | 'Group Home 2') => {
+    const startIndex = (currentPage - 1) * IMAGES_PER_PAGE + 1;
+    const images = Array.from({ length: IMAGES_PER_PAGE }, (_, i) => 
+      `/images/${branch}/image${startIndex + i}.jpg`
+    );
+    setGalleryImages(images);
+    setSelectedGalleryBranch(branch);
+    setIsGalleryLightboxOpen(true);
+    setCurrentImageIndex(0);
+  };
+
+  // Function to handle clicking an image in the gallery lightbox
+  const handleGalleryImageClick = (branch: string, index: number) => {
+    setCurrentBranch(branch as 'Group Home 1' | 'Group Home 2');
+    setCurrentImageIndex(index);
+    setSelectedImage(`/images/${branch}/image${index + 1}.jpg`);
+    setIsLightboxOpen(true);
+  };
+
+  // Add navigation functions
+  const handleNextPage = (e: React.MouseEvent) => {
+    e.stopPropagation();
+    const maxPages = Math.ceil(totalImages[selectedGalleryBranch as keyof typeof totalImages] / IMAGES_PER_PAGE);
+    if (currentPage < maxPages) {
+      setCurrentPage(prev => prev + 1);
+      const startIndex = currentPage * IMAGES_PER_PAGE + 1;
+      const images = Array.from({ length: IMAGES_PER_PAGE }, (_, i) => 
+        `/images/${selectedGalleryBranch}/image${startIndex + i}.jpg`
+      );
+      setGalleryImages(images);
+      setCurrentImageIndex(0);
+    }
+  };
+
+  const handlePrevPage = (e: React.MouseEvent) => {
+    e.stopPropagation();
+    if (currentPage > 1) {
+      setCurrentPage(prev => prev - 1);
+      const startIndex = (currentPage - 2) * IMAGES_PER_PAGE + 1;
+      const images = Array.from({ length: IMAGES_PER_PAGE }, (_, i) => 
+        `/images/${selectedGalleryBranch}/image${startIndex + i}.jpg`
+      );
+      setGalleryImages(images);
+      setCurrentImageIndex(0);
     }
   };
 
@@ -389,7 +556,7 @@ export default function Home() {
         {/* Parallax Background Layers */}
         <div className="fixed inset-0 z-0">
           {/* Main Background Image */}
-          <Image
+            <Image
             src="/images/hero-bg.jpg"
             alt="Caring hands"
             fill
@@ -672,7 +839,7 @@ export default function Home() {
                       <h4 className="text-primary-green font-bold mb-2">Certified Team</h4>
                       <p className="text-sm text-gray-600">Expert healthcare professionals dedicated to your care</p>
                     </div>
-                    <Image 
+          <Image
                       src="/images/about-2.png" 
                       alt="Home care" 
                       width={400} 
@@ -850,7 +1017,7 @@ export default function Home() {
 
                 {/* View More/Less Button */}
                 <motion.button
-                  onClick={() => handleImageClick('Group Home 1', 1)}
+                  onClick={() => handleViewMorePhotos('Group Home 1')}
                   className="relative w-full group overflow-hidden rounded-xl shadow-lg aspect-[5/1] cursor-pointer bg-primary-green/10"
                   whileHover={{ scale: 1.02 }}
                   whileTap={{ scale: 0.98 }}
@@ -895,7 +1062,7 @@ export default function Home() {
 
                 {/* View More/Less Button */}
                 <motion.button
-                  onClick={() => handleImageClick('Group Home 2', 1)}
+                  onClick={() => handleViewMorePhotos('Group Home 2')}
                   className="relative w-full group overflow-hidden rounded-xl shadow-lg aspect-[5/1] cursor-pointer bg-primary-green/10"
                   whileHover={{ scale: 1.02 }}
                   whileTap={{ scale: 0.98 }}
@@ -912,64 +1079,99 @@ export default function Home() {
               </motion.div>
             </div>
 
-            {/* Lightbox Modal */}
-            {isLightboxOpen && (
+            {/* Gallery Lightbox Modal */}
+            {isGalleryLightboxOpen && (
               <motion.div
                 initial={{ opacity: 0 }}
                 animate={{ opacity: 1 }}
                 exit={{ opacity: 0 }}
-                className="fixed inset-0 z-50 bg-black/95 flex items-center justify-center mt-[120px]"
-                onClick={() => setIsLightboxOpen(false)}
+                className="fixed inset-0 z-50 bg-black/90 flex items-center justify-center p-4 md:p-8"
+                onClick={() => {
+                  setIsGalleryLightboxOpen(false);
+                  setCurrentPage(1); // Reset page when closing
+                }}
               >
-                <div className="relative mx-auto max-w-7xl px-4 h-[calc(100vh-180px)] flex items-center justify-center">
-                  <div className="relative w-full h-full flex items-center justify-center">
-                    <div className="relative w-full h-full flex items-center justify-center">
-                      <Image
-                        src={selectedImage}
-                        alt="Gallery image"
-                        width={1200}
-                        height={800}
-                        className="rounded-lg shadow-2xl object-contain max-h-full max-w-full"
-                        onClick={(e) => e.stopPropagation()}
-                        priority
-                      />
-                    </div>
+                <motion.div
+                  initial={{ scale: 0.9, opacity: 0 }}
+                  animate={{ scale: 1, opacity: 1 }}
+                  exit={{ scale: 0.9, opacity: 0 }}
+                  className="bg-white rounded-xl p-6 max-w-7xl w-full mx-auto relative"
+                  onClick={e => e.stopPropagation()}
+                >
+                  {/* Close Button */}
+                  <button
+                    onClick={() => {
+                      setIsGalleryLightboxOpen(false);
+                      setCurrentPage(1); // Reset page when closing
+                    }}
+                    className="absolute top-4 right-4 bg-red-500 p-2 rounded-full text-white hover:bg-red-600 transition-all duration-200 hover:rotate-90 transform z-10"
+                  >
+                    <svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" />
+                    </svg>
+                  </button>
 
-                    {/* Close Button */}
-                    <button
-                      className="absolute top-4 right-4 bg-red-500 p-2 rounded-full text-white hover:bg-red-600 transition-all duration-200 hover:rotate-90 transform"
-                      onClick={() => setIsLightboxOpen(false)}
-                    >
-                      <svg className="w-8 h-8" viewBox="0 0 24 24" fill="none" stroke="currentColor">
-                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" />
-                      </svg>
-                    </button>
+                  {/* Gallery Title */}
+                  <div className="text-center mb-6">
+                    <h3 className="text-2xl font-bold text-primary-green">
+                      {selectedGalleryBranch === 'Group Home 1' 
+                        ? '16937 SE Harrison St Portland OR 97233'
+                        : '2749 SE 170th Ave Portland OR 97236'} 
+                      - Page {currentPage}
+                    </h3>
+                  </div>
 
-                    {/* Navigation Arrows */}
+                  {/* Image Grid */}
+                  <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4">
+                    {galleryImages.map((image, index) => (
+                      <motion.div
+                        key={`${image}-${index}`}
+                        className="relative aspect-square rounded-lg overflow-hidden cursor-pointer group"
+                        whileHover={{ scale: 1.02 }}
+                        whileTap={{ scale: 0.98 }}
+                        onClick={() => handleGalleryImageClick(selectedGalleryBranch, ((currentPage - 1) * IMAGES_PER_PAGE) + index)}
+                      >
+                        <Image
+                          src={image}
+                          alt={`Gallery image ${((currentPage - 1) * IMAGES_PER_PAGE) + index + 1}`}
+                          fill
+                          className="object-cover transition-transform duration-300 group-hover:scale-110"
+                          sizes="(max-width: 768px) 50vw, (max-width: 1200px) 33vw, 25vw"
+                        />
+                        <div className="absolute inset-0 bg-black/50 opacity-0 group-hover:opacity-100 transition-opacity duration-300 flex items-center justify-center">
+                          <span className="text-white font-medium">View Full Size</span>
+                        </div>
+                      </motion.div>
+                    ))}
+                  </div>
+
+                  {/* Navigation Buttons */}
+                  {currentPage > 1 && (
                     <button
-                      className="absolute left-4 top-1/2 -translate-y-1/2 bg-black/50 p-2 rounded-full text-white hover:text-primary-yellow transition-colors"
-                      onClick={(e) => {
-                        e.stopPropagation();
-                        handlePrevImage(e);
-                      }}
+                      className="absolute left-4 top-1/2 -translate-y-1/2 bg-black/50 p-2 rounded-full text-white hover:bg-black/70 transition-colors"
+                      onClick={handlePrevPage}
                     >
                       <svg className="w-8 h-8" viewBox="0 0 24 24" fill="none" stroke="currentColor">
                         <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 19l-7-7 7-7" />
                       </svg>
                     </button>
+                  )}
+                  {currentPage < Math.ceil(totalImages[selectedGalleryBranch as keyof typeof totalImages] / IMAGES_PER_PAGE) && (
                     <button
-                      className="absolute right-4 top-1/2 -translate-y-1/2 bg-black/50 p-2 rounded-full text-white hover:text-primary-yellow transition-colors"
-                      onClick={(e) => {
-                        e.stopPropagation();
-                        handleNextImage(e);
-                      }}
+                      className="absolute right-4 top-1/2 -translate-y-1/2 bg-black/50 p-2 rounded-full text-white hover:bg-black/70 transition-colors"
+                      onClick={handleNextPage}
                     >
                       <svg className="w-8 h-8" viewBox="0 0 24 24" fill="none" stroke="currentColor">
                         <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 5l7 7-7 7" />
                       </svg>
                     </button>
+                  )}
+
+                  {/* Page Counter */}
+                  <div className="absolute bottom-4 left-1/2 -translate-x-1/2 bg-black/50 px-4 py-2 rounded-full text-white text-sm">
+                    Page {currentPage} of {Math.ceil(totalImages[selectedGalleryBranch as keyof typeof totalImages] / IMAGES_PER_PAGE)}
                   </div>
-                </div>
+                </motion.div>
               </motion.div>
             )}
           </div>
@@ -1038,29 +1240,27 @@ export default function Home() {
                   whileInView={{ opacity: 1, x: 0 }}
                   viewport={{ once: true }}
                 >
-                  <form onSubmit={handleContactSubmit} className="space-y-6">
-                    {formStatus.show && (
-                      <motion.div
-                        initial={{ opacity: 0, y: -10 }}
-                        animate={{ opacity: 1, y: 0 }}
-                        className={`p-4 rounded-lg ${
-                          formStatus.type === 'success' 
-                            ? 'bg-green-50 text-green-800' 
-                            : 'bg-red-50 text-red-800'
-                        }`}
-                      >
-                        {formStatus.message}
-                      </motion.div>
-                    )}
+                  <form 
+                    onSubmit={handleSubmit}
+                    className="space-y-6"
+                  >
                     <div>
                       <label htmlFor="name" className="block text-sm font-medium text-gray-700 mb-2">Full Name</label>
                       <input
                         type="text"
                         id="name"
                         name="name"
-                        className="w-full px-4 py-3 rounded-lg border border-gray-300 focus:ring-2 focus:ring-primary-green focus:border-primary-green transition-colors"
+                        value={formData.name}
+                        onChange={handleInputChange}
+                        onBlur={handleInputBlur}
+                        className={`w-full px-4 py-3 rounded-lg border transition-all duration-300 ${
+                          formErrors.name ? 'border-red-500 focus:ring-red-500' : 'border-gray-300 focus:ring-primary-green'
+                        } focus:ring-2 focus:border-transparent`}
                         required
                       />
+                      {formErrors.name && (
+                        <p className="mt-1 text-sm text-red-500 transition-all duration-300">{formErrors.name}</p>
+                      )}
                     </div>
                     <div>
                       <label htmlFor="email" className="block text-sm font-medium text-gray-700 mb-2">Email</label>
@@ -1068,9 +1268,17 @@ export default function Home() {
                         type="email"
                         id="email"
                         name="email"
-                        className="w-full px-4 py-3 rounded-lg border border-gray-300 focus:ring-2 focus:ring-primary-green focus:border-primary-green transition-colors"
+                        value={formData.email}
+                        onChange={handleInputChange}
+                        onBlur={handleInputBlur}
+                        className={`w-full px-4 py-3 rounded-lg border transition-all duration-300 ${
+                          formErrors.email ? 'border-red-500 focus:ring-red-500' : 'border-gray-300 focus:ring-primary-green'
+                        } focus:ring-2 focus:border-transparent`}
                         required
                       />
+                      {formErrors.email && (
+                        <p className="mt-1 text-sm text-red-500 transition-all duration-300">{formErrors.email}</p>
+                      )}
                     </div>
                     <div>
                       <label htmlFor="phone" className="block text-sm font-medium text-gray-700 mb-2">Phone Number</label>
@@ -1078,38 +1286,48 @@ export default function Home() {
                         type="tel"
                         id="phone"
                         name="phone"
-                        className="w-full px-4 py-3 rounded-lg border border-gray-300 focus:ring-2 focus:ring-primary-green focus:border-primary-green transition-colors"
+                        value={formData.phone}
+                        onChange={handleInputChange}
+                        onBlur={handleInputBlur}
+                        placeholder="(XXX) XXX-XXXX"
+                        maxLength={14}
+                        className={`w-full px-4 py-3 rounded-lg border transition-all duration-300 ${
+                          formErrors.phone ? 'border-red-500 focus:ring-red-500' : 'border-gray-300 focus:ring-primary-green'
+                        } focus:ring-2 focus:border-transparent`}
                         required
                       />
+                      {formErrors.phone && (
+                        <p className="mt-1 text-sm text-red-500 transition-all duration-300">{formErrors.phone}</p>
+                      )}
                     </div>
                     <div>
-                      <label htmlFor="message" className="block text-sm font-medium text-gray-700 mb-2">Message</label>
+                      <label htmlFor="message" className="block text-sm font-medium text-gray-700 mb-2">
+                        Message <span className="text-sm text-gray-500">({500 - formData.message.length} characters remaining)</span>
+                      </label>
                       <textarea
                         id="message"
                         name="message"
+                        value={formData.message}
+                        onChange={handleInputChange}
+                        onBlur={handleInputBlur}
                         rows={4}
-                        className="w-full px-4 py-3 rounded-lg border border-gray-300 focus:ring-2 focus:ring-primary-green focus:border-primary-green transition-colors"
+                        className={`w-full px-4 py-3 rounded-lg border transition-all duration-300 ${
+                          formErrors.message ? 'border-red-500 focus:ring-red-500' : 'border-gray-300 focus:ring-primary-green'
+                        } focus:ring-2 focus:border-transparent`}
                         required
                       ></textarea>
+                      {formErrors.message && (
+                        <p className="mt-1 text-sm text-red-500 transition-all duration-300">{formErrors.message}</p>
+                      )}
                     </div>
                     <motion.button 
                       type="submit" 
                       className="w-full btn btn-primary bg-primary-green text-white hover:bg-primary-green/90 disabled:opacity-50 disabled:cursor-not-allowed"
-                      whileHover={{ scale: isSubmitting ? 1 : 1.02 }}
-                      whileTap={{ scale: isSubmitting ? 1 : 0.98 }}
+                      whileHover={{ scale: 1.02 }}
+                      whileTap={{ scale: 0.98 }}
                       disabled={isSubmitting}
                     >
-                      {isSubmitting ? (
-                        <span className="flex items-center justify-center gap-2">
-                          <svg className="animate-spin h-5 w-5" viewBox="0 0 24 24">
-                            <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4" fill="none" />
-                            <path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z" />
-                          </svg>
-                          Sending...
-                        </span>
-                      ) : (
-                        'Send Message'
-                      )}
+                      {isSubmitting ? 'Sending...' : 'Send Message'}
                     </motion.button>
                   </form>
                 </motion.div>
@@ -1183,6 +1401,114 @@ export default function Home() {
           </div>
         </div>
       </footer>
+
+      {/* Success Popup */}
+      {showSuccessPopup && (
+        <motion.div
+          initial={{ opacity: 0 }}
+          animate={{ opacity: 1 }}
+          exit={{ opacity: 0 }}
+          className="fixed inset-0 z-50 flex items-center justify-center bg-black/50"
+          onClick={() => setShowSuccessPopup(false)}
+        >
+          <motion.div
+            initial={{ scale: 0.9, opacity: 0 }}
+            animate={{ scale: 1, opacity: 1 }}
+            exit={{ scale: 0.9, opacity: 0 }}
+            className="bg-white rounded-xl p-8 max-w-md mx-4 relative"
+            onClick={e => e.stopPropagation()}
+          >
+            <button
+              onClick={() => setShowSuccessPopup(false)}
+              className="absolute top-4 right-4 text-gray-400 hover:text-gray-600 transition-colors"
+            >
+              <svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" />
+              </svg>
+            </button>
+            <div className="text-center">
+              <div className="w-16 h-16 bg-green-100 rounded-full flex items-center justify-center mx-auto mb-4">
+                <svg className="w-8 h-8 text-green-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M5 13l4 4L19 7" />
+                </svg>
+              </div>
+              <h3 className="text-xl font-bold text-gray-900 mb-2">Message Sent Successfully!</h3>
+              <p className="text-gray-600">Thank you for contacting us. We&apos;ll get back to you as soon as we can.</p>
+            </div>
+          </motion.div>
+        </motion.div>
+      )}
+
+      {/* Full Size Image Lightbox */}
+      {isLightboxOpen && (
+        <motion.div
+          initial={{ opacity: 0 }}
+          animate={{ opacity: 1 }}
+          exit={{ opacity: 0 }}
+          className="fixed inset-0 z-50 bg-black/95 flex items-center justify-center"
+          onClick={() => setIsLightboxOpen(false)}
+        >
+          <div className="relative mx-auto max-w-7xl px-4 h-[calc(100vh-80px)] flex items-center justify-center">
+            <div className="relative w-full h-full flex items-center justify-center">
+              <motion.div
+                initial={{ scale: 0.9, opacity: 0 }}
+                animate={{ scale: 1, opacity: 1 }}
+                exit={{ scale: 0.9, opacity: 0 }}
+                className="relative w-full h-full flex items-center justify-center"
+              >
+                <Image
+                  src={selectedImage}
+                  alt="Gallery image"
+                  width={1200}
+                  height={800}
+                  className="rounded-lg shadow-2xl object-contain max-h-full max-w-full"
+                  onClick={(e) => e.stopPropagation()}
+                  priority
+                />
+              </motion.div>
+
+              {/* Close Button */}
+              <button
+                className="absolute top-4 right-4 bg-red-500 p-2 rounded-full text-white hover:bg-red-600 transition-all duration-200 hover:rotate-90 transform"
+                onClick={() => setIsLightboxOpen(false)}
+              >
+                <svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" />
+                </svg>
+              </button>
+
+              {/* Navigation Arrows */}
+              <button
+                className="absolute left-4 top-1/2 -translate-y-1/2 bg-black/50 p-2 rounded-full text-white hover:bg-black/70 transition-colors"
+                onClick={(e) => {
+                  e.stopPropagation();
+                  handlePrevImage(e);
+                }}
+              >
+                <svg className="w-8 h-8" viewBox="0 0 24 24" fill="none" stroke="currentColor">
+                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 19l-7-7 7-7" />
+                </svg>
+              </button>
+              <button
+                className="absolute right-4 top-1/2 -translate-y-1/2 bg-black/50 p-2 rounded-full text-white hover:bg-black/70 transition-colors"
+                onClick={(e) => {
+                  e.stopPropagation();
+                  handleNextImage(e);
+                }}
+              >
+                <svg className="w-8 h-8" viewBox="0 0 24 24" fill="none" stroke="currentColor">
+                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 5l7 7-7 7" />
+                </svg>
+              </button>
+
+              {/* Image Counter */}
+              <div className="absolute bottom-4 left-1/2 -translate-x-1/2 bg-black/50 px-4 py-2 rounded-full text-white text-sm">
+                {currentImageIndex + 1} / {totalImages[currentBranch as keyof typeof totalImages]}
+              </div>
+            </div>
+          </div>
+        </motion.div>
+      )}
     </main>
   );
 }
@@ -1206,7 +1532,7 @@ const services = [
   },
   {
     title: "Meal Preparation",
-    description: "Meals are tailored to each resident's individual dietary needs, with a focus on balanced nutrition based on personal dietitian recommendations."
+    description: "We provide nutritious, home-cooked meals tailored to each resident's individual dietary needs and preferences. Our meal plans prioritize balanced nutrition, ensuring that residents receive the essential nutrients they need for overall health and well-being. Every meal is prepared with care, promoting a comforting and enjoyable dining experience in a supportive, home-like environment"
   },
   {
     title: "Planned Community Activities",

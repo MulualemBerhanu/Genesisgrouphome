@@ -28,7 +28,12 @@ export default function RootLayout({
 }>) {
   return (
     <html lang="en" className={`${roboto.variable} ${merriweather.variable}`}>
-      <body className="bg-[#FFFDE7]">{children}</body>
+      <body 
+        className="bg-[#FFFDE7]"
+        suppressHydrationWarning={true}
+      >
+        {children}
+      </body>
     </html>
   );
 }
