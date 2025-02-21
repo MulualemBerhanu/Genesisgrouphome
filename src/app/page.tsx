@@ -3,6 +3,7 @@ import Image from "next/image";
 import Link from "next/link";
 import { useState, useEffect } from 'react';
 import { motion } from 'framer-motion';
+import { getImagePath } from '../utils/imageUtils';
 
 const fadeIn = {
   initial: { opacity: 0, y: 20 },
@@ -73,7 +74,7 @@ export default function Home() {
   const handleImageClick = (branch: 'Group Home 1' | 'Group Home 2', index: number) => {
     setCurrentBranch(branch);
     setCurrentImageIndex(index);
-    setSelectedImage(`/images/${branch}/image${index}.jpg`);
+    setSelectedImage(getImagePath(`/images/${branch}/image${index}.jpg`));
     setIsLightboxOpen(true);
   };
 
@@ -82,7 +83,7 @@ export default function Home() {
     if (currentImageIndex > 1 && currentBranch) {
       const newIndex = currentImageIndex - 1;
       setCurrentImageIndex(newIndex);
-      setSelectedImage(`/images/${currentBranch}/image${newIndex}.jpg`);
+      setSelectedImage(getImagePath(`/images/${currentBranch}/image${newIndex}.jpg`));
     }
   };
 
@@ -93,7 +94,7 @@ export default function Home() {
       if (currentImageIndex < maxImages) {
         const newIndex = currentImageIndex + 1;
         setCurrentImageIndex(newIndex);
-        setSelectedImage(`/images/${currentBranch}/image${newIndex}.jpg`);
+        setSelectedImage(getImagePath(`/images/${currentBranch}/image${newIndex}.jpg`));
       }
     }
   };
@@ -129,7 +130,7 @@ export default function Home() {
         onClick={() => handleImageClick(branch, i + 1)}
       >
         <Image
-          src={`/images/${branch}/image${i + 1}.jpg`}
+          src={getImagePath(`/images/${branch}/image${i + 1}.jpg`)}
           alt={`${branch} Image ${i + 1}`}
           fill
           className="object-cover transform group-hover:scale-110 transition-transform duration-500"
@@ -302,7 +303,7 @@ export default function Home() {
   const handleViewMorePhotos = (branch: 'Group Home 1' | 'Group Home 2') => {
     const startIndex = (currentPage - 1) * IMAGES_PER_PAGE + 1;
     const images = Array.from({ length: IMAGES_PER_PAGE }, (_, i) => 
-      `/images/${branch}/image${startIndex + i}.jpg`
+      getImagePath(`/images/${branch}/image${startIndex + i}.jpg`)
     );
     setGalleryImages(images);
     setSelectedGalleryBranch(branch);
@@ -314,7 +315,7 @@ export default function Home() {
   const handleGalleryImageClick = (branch: string, index: number) => {
     setCurrentBranch(branch as 'Group Home 1' | 'Group Home 2');
     setCurrentImageIndex(index);
-    setSelectedImage(`/images/${branch}/image${index + 1}.jpg`);
+    setSelectedImage(getImagePath(`/images/${branch}/image${index + 1}.jpg`));
     setIsLightboxOpen(true);
   };
 
@@ -326,7 +327,7 @@ export default function Home() {
       setCurrentPage(prev => prev + 1);
       const startIndex = currentPage * IMAGES_PER_PAGE + 1;
       const images = Array.from({ length: IMAGES_PER_PAGE }, (_, i) => 
-        `/images/${selectedGalleryBranch}/image${startIndex + i}.jpg`
+        getImagePath(`/images/${selectedGalleryBranch}/image${startIndex + i}.jpg`)
       );
       setGalleryImages(images);
       setCurrentImageIndex(0);
@@ -339,7 +340,7 @@ export default function Home() {
       setCurrentPage(prev => prev - 1);
       const startIndex = (currentPage - 2) * IMAGES_PER_PAGE + 1;
       const images = Array.from({ length: IMAGES_PER_PAGE }, (_, i) => 
-        `/images/${selectedGalleryBranch}/image${startIndex + i}.jpg`
+        getImagePath(`/images/${selectedGalleryBranch}/image${startIndex + i}.jpg`)
       );
       setGalleryImages(images);
       setCurrentImageIndex(0);
@@ -404,11 +405,11 @@ export default function Home() {
               <Link href="/">
                 <div className="relative">
                   <Image
-                    src="/images/changed_logo.png" 
-                    alt="Genesis Group Home LLC" 
-                    width={200} 
-                    height={50} 
-                    className="h-auto mix-blend-darken filter contrast-125 saturate-150 md:w-[280px] md:h-[70px]" 
+                    src={getImagePath("/images/changed_logo.png")}
+                    alt="Genesis Group Home LLC"
+                    width={200}
+                    height={50}
+                    className="h-auto mix-blend-darken filter contrast-125 saturate-150 md:w-[280px] md:h-[70px]"
                     priority
                     style={{ 
                       objectFit: 'contain',
