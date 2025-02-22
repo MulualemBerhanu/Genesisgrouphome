@@ -558,7 +558,7 @@ export default function Home() {
         <div className="fixed inset-0 z-0">
           {/* Main Background Image */}
           <Image
-            src="/images/Group Home 2/hero-bg.jpg"
+            src="/images/Group Home 2/herobg.jpg"
             alt="Caring hands"
             fill
             className="object-cover transform scale-110 transition-transform duration-1000"
@@ -824,7 +824,7 @@ export default function Home() {
                 <div className="grid grid-cols-2 gap-6">
                   <div className="space-y-6">
                     <Image 
-                      src="/images/Group Home 2/about-1.jpg" 
+                      src="/images/Group Home 2/about1.jpg" 
                       alt="Caring moment" 
                       width={400} 
                       height={400} 
@@ -841,7 +841,7 @@ export default function Home() {
                       <p className="text-sm text-gray-600">Expert healthcare professionals dedicated to your care</p>
                     </div>
                     <Image
-                      src="/images/Group Home 2/about-2.jpg" 
+                      src="/images/Group Home 2/about2.jpg" 
                       alt="Home care" 
                       width={400} 
                       height={400} 
