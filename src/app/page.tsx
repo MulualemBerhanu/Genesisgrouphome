@@ -558,7 +558,7 @@ export default function Home() {
         <div className="fixed inset-0 z-0">
           {/* Main Background Image */}
             <Image
-            src="/images/hero-bg.jpg"
+            src="/images/Group Home 1/hero-bg.jpg"
             alt="Caring hands"
             fill
             className="object-cover transform scale-110 transition-transform duration-1000"
