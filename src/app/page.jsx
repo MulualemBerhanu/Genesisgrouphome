@@ -656,7 +656,7 @@ export default function Home() {
                 <div className="grid grid-cols-2 gap-6">
                   <div className="space-y-6">
                     <Image 
-                      src="/images/about-1.jpg" 
+                      src="/images/about-1.png" 
                       alt="Caring moment" 
                       width={400} 
                       height={400} 
@@ -673,7 +673,7 @@ export default function Home() {
                       <p className="text-sm text-gray-600">Expert healthcare professionals dedicated to your care</p>
                     </div>
                     <Image 
-                      src="/images/about-2.jpg" 
+                      src="/images/about-2.png" 
                       alt="Home care" 
                       width={400} 
                       height={400} 
