@@ -590,7 +590,7 @@ export default function Home() {
           <div className="container h-full flex flex-col">
             {/* Top Content */}
             <motion.div 
-              className="flex-1 flex items-center justify-center pt-12 md:pt-12 pb-24 md:pb-8"
+              className="flex-1 flex items-center justify-center pt-12 md:pt-12 pb-32 md:pb-16"
               initial={{ opacity: 0, y: 20 }}
               animate={{ opacity: 1, y: 0 }}
               transition={{ duration: 0.8 }}
@@ -667,9 +667,9 @@ export default function Home() {
             </motion.div>
 
             {/* Bottom Content */}
-            <div className="pb-32 mt-16 md:mt-0">
+            <div className="pb-32 mt-8 md:mt-0">
               <motion.div
-                className="grid grid-cols-1 md:grid-cols-3 gap-6 max-w-4xl mx-auto px-4 mt-0 md:-mt-12 relative z-10"
+                className="grid grid-cols-1 md:grid-cols-3 gap-6 max-w-4xl mx-auto px-4 mt-0 md:mt-0 relative z-10"
                 initial={{ opacity: 0, y: 20 }}
                 animate={{ opacity: 1, y: 0 }}
                 transition={{ duration: 0.8, delay: 0.6 }}
