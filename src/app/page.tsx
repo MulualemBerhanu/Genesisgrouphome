@@ -48,7 +48,7 @@ export default function Home() {
   const [isGalleryLightboxOpen, setIsGalleryLightboxOpen] = useState(false);
   const [selectedGalleryBranch, setSelectedGalleryBranch] = useState<'Group Home 1' | 'Group Home 2' | ''>('');
   const [galleryImages, setGalleryImages] = useState<string[]>([]);
-  const IMAGES_PER_PAGE = 8;
+  const [isMobile, setIsMobile] = useState(false);
 
   // Number of images for each branch
   const totalImages = {
@@ -65,6 +65,16 @@ export default function Home() {
 
     window.addEventListener('scroll', handleScroll);
     return () => window.removeEventListener('scroll', handleScroll);
+  }, []);
+
+  useEffect(() => {
+    const checkMobile = () => {
+      setIsMobile(window.innerWidth < 768);
+    };
+    
+    checkMobile();
+    window.addEventListener('resize', checkMobile);
+    return () => window.removeEventListener('resize', checkMobile);
   }, []);
 
   const scrollToTop = () => {
@@ -301,8 +311,9 @@ export default function Home() {
 
   // Function to handle opening the gallery lightbox
   const handleViewMorePhotos = (branch: 'Group Home 1' | 'Group Home 2') => {
-    const startIndex = (currentPage - 1) * IMAGES_PER_PAGE + 1;
-    const images = Array.from({ length: IMAGES_PER_PAGE }, (_, i) => 
+    const imagesCount = isMobile ? 6 : 8;
+    const startIndex = (currentPage - 1) * imagesCount + 1;
+    const images = Array.from({ length: imagesCount }, (_, i) => 
       getImagePath(`/images/${branch}/image${startIndex + i}.jpg`)
     );
     setGalleryImages(images);
@@ -322,11 +333,12 @@ export default function Home() {
   // Add navigation functions
   const handleNextPage = (e: React.MouseEvent) => {
     e.stopPropagation();
-    const maxPages = Math.ceil(totalImages[selectedGalleryBranch as keyof typeof totalImages] / IMAGES_PER_PAGE);
+    const imagesCount = isMobile ? 6 : 8;
+    const maxPages = Math.ceil(totalImages[selectedGalleryBranch as keyof typeof totalImages] / imagesCount);
     if (currentPage < maxPages) {
       setCurrentPage(prev => prev + 1);
-      const startIndex = currentPage * IMAGES_PER_PAGE + 1;
-      const images = Array.from({ length: IMAGES_PER_PAGE }, (_, i) => 
+      const startIndex = currentPage * imagesCount + 1;
+      const images = Array.from({ length: imagesCount }, (_, i) => 
         getImagePath(`/images/${selectedGalleryBranch}/image${startIndex + i}.jpg`)
       );
       setGalleryImages(images);
@@ -336,16 +348,19 @@ export default function Home() {
 
   const handlePrevPage = (e: React.MouseEvent) => {
     e.stopPropagation();
+    const imagesCount = isMobile ? 6 : 8;
     if (currentPage > 1) {
       setCurrentPage(prev => prev - 1);
-      const startIndex = (currentPage - 2) * IMAGES_PER_PAGE + 1;
-      const images = Array.from({ length: IMAGES_PER_PAGE }, (_, i) => 
+      const startIndex = (currentPage - 2) * imagesCount + 1;
+      const images = Array.from({ length: imagesCount }, (_, i) => 
         getImagePath(`/images/${selectedGalleryBranch}/image${startIndex + i}.jpg`)
       );
       setGalleryImages(images);
       setCurrentImageIndex(0);
     }
   };
+
+  const IMAGES_PER_PAGE = isMobile ? 6 : 8;
 
   return (
     <main>
@@ -1106,7 +1121,7 @@ export default function Home() {
                   initial={{ scale: 0.9, opacity: 0 }}
                   animate={{ scale: 1, opacity: 1 }}
                   exit={{ scale: 0.9, opacity: 0 }}
-                  className="bg-white rounded-xl p-6 max-w-7xl w-full mx-auto relative pt-[120px] md:pt-6"
+                  className="bg-white rounded-xl p-6 max-w-7xl w-full mx-auto relative"
                   onClick={e => e.stopPropagation()}
                 >
                   {/* Close Button */}
@@ -1123,7 +1138,7 @@ export default function Home() {
                   </button>
 
                   {/* Gallery Title */}
-                  <div className="text-center mb-6">
+                  <div className="text-center mb-6 mt-4">
                     <h3 className="text-xl md:text-2xl font-bold text-primary-green">
                       {selectedGalleryBranch === 'Group Home 1' 
                         ? '16937 SE Harrison St Portland OR 97233'
@@ -1133,7 +1148,7 @@ export default function Home() {
                   </div>
 
                   {/* Image Grid */}
-                  <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4">
+                  <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
                     {galleryImages.map((image, index) => (
                       <motion.div
                         key={`${image}-${index}`}
@@ -1147,7 +1162,7 @@ export default function Home() {
                           alt={`Gallery image ${((currentPage - 1) * IMAGES_PER_PAGE) + index + 1}`}
                           fill
                           className="object-cover transition-transform duration-300 group-hover:scale-110"
-                          sizes="(max-width: 768px) 50vw, (max-width: 1200px) 33vw, 25vw"
+                          sizes="(max-width: 768px) 50vw, 25vw"
                         />
                         <div className="absolute inset-0 bg-black/50 opacity-0 group-hover:opacity-100 transition-opacity duration-300 flex items-center justify-center">
                           <span className="text-white font-medium">View Full Size</span>
