@@ -553,7 +553,7 @@ export default function Home() {
       </motion.header>
 
       {/* Hero Section */}
-      <section className="relative h-screen overflow-hidden">
+      <section className="relative min-h-screen overflow-hidden pt-[120px] md:pt-0">
         {/* Parallax Background Layers */}
         <div className="fixed inset-0 z-0">
           {/* Main Background Image */}
@@ -590,7 +590,7 @@ export default function Home() {
           <div className="container h-full flex flex-col">
             {/* Top Content */}
             <motion.div 
-              className="flex-1 flex items-center justify-center pt-12 pb-8"
+              className="flex-1 flex items-center justify-center pt-4 md:pt-12 pb-8"
               initial={{ opacity: 0, y: 20 }}
               animate={{ opacity: 1, y: 0 }}
               transition={{ duration: 0.8 }}
