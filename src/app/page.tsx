@@ -478,6 +478,11 @@ export default function Home() {
                   <Link 
                     href={link.href}
                     className="relative text-gray-700 hover:text-primary-green transition-colors py-2 flex items-center gap-2 group"
+                    onClick={() => {
+                      setIsGalleryLightboxOpen(false);
+                      setIsLightboxOpen(false);
+                      setCurrentPage(1);
+                    }}
                   >
                     <span className="text-sm opacity-70 group-hover:opacity-100 transition-opacity">
                       {link.icon}
@@ -539,7 +544,12 @@ export default function Home() {
                     <Link 
                       href={link.href}
                       className="flex items-center gap-3 text-gray-700 hover:text-primary-green hover:bg-primary-yellow/50 px-4 py-2 rounded-lg transition-all"
-                      onClick={() => setIsMobileMenuOpen(false)}
+                      onClick={() => {
+                        setIsMobileMenuOpen(false);
+                        setIsGalleryLightboxOpen(false);
+                        setIsLightboxOpen(false);
+                        setCurrentPage(1);
+                      }}
                     >
                       <span className="text-sm opacity-70">{link.icon}</span>
                       {link.label}
@@ -1086,10 +1096,10 @@ export default function Home() {
                 initial={{ opacity: 0 }}
                 animate={{ opacity: 1 }}
                 exit={{ opacity: 0 }}
-                className="fixed inset-0 z-50 bg-black/90 flex items-center justify-center p-4 md:p-8"
+                className="fixed inset-0 z-[100] bg-black/90 flex items-center justify-center p-4 md:p-8"
                 onClick={() => {
                   setIsGalleryLightboxOpen(false);
-                  setCurrentPage(1); // Reset page when closing
+                  setCurrentPage(1);
                 }}
               >
                 <motion.div
@@ -1103,9 +1113,9 @@ export default function Home() {
                   <button
                     onClick={() => {
                       setIsGalleryLightboxOpen(false);
-                      setCurrentPage(1); // Reset page when closing
+                      setCurrentPage(1);
                     }}
-                    className="absolute top-4 right-4 bg-red-500 p-2 rounded-full text-white hover:bg-red-600 transition-all duration-200 hover:rotate-90 transform z-10"
+                    className="absolute top-[80px] md:top-4 right-4 bg-red-500 p-2 rounded-full text-white hover:bg-red-600 transition-all duration-200 hover:rotate-90 transform z-[110]"
                   >
                     <svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                       <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" />
@@ -1341,7 +1351,12 @@ export default function Home() {
       {/* Scroll to Top Button */}
       {showScrollTop && (
         <motion.button
-          onClick={scrollToTop}
+          onClick={() => {
+            scrollToTop();
+            setIsGalleryLightboxOpen(false);
+            setIsLightboxOpen(false);
+            setCurrentPage(1);
+          }}
           className="fixed bottom-8 right-8 bg-primary-green text-white p-4 rounded-full shadow-lg hover:bg-opacity-90 transition-all duration-300 z-50"
           initial={{ opacity: 0, y: 20 }}
           animate={{ opacity: 1, y: 0 }}
