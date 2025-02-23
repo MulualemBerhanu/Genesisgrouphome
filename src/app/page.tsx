@@ -1106,7 +1106,7 @@ export default function Home() {
                   initial={{ scale: 0.9, opacity: 0 }}
                   animate={{ scale: 1, opacity: 1 }}
                   exit={{ scale: 0.9, opacity: 0 }}
-                  className="bg-white rounded-xl p-6 max-w-7xl w-full mx-auto relative"
+                  className="bg-white rounded-xl p-6 max-w-7xl w-full mx-auto relative pt-[120px] md:pt-6"
                   onClick={e => e.stopPropagation()}
                 >
                   {/* Close Button */}
@@ -1115,7 +1115,7 @@ export default function Home() {
                       setIsGalleryLightboxOpen(false);
                       setCurrentPage(1);
                     }}
-                    className="absolute top-[80px] md:top-4 right-4 bg-red-500 p-2 rounded-full text-white hover:bg-red-600 transition-all duration-200 hover:rotate-90 transform z-[110]"
+                    className="absolute top-4 right-4 bg-red-500 p-2 rounded-full text-white hover:bg-red-600 transition-all duration-200 hover:rotate-90 transform z-[110]"
                   >
                     <svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                       <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" />
@@ -1124,7 +1124,7 @@ export default function Home() {
 
                   {/* Gallery Title */}
                   <div className="text-center mb-6">
-                    <h3 className="text-2xl font-bold text-primary-green">
+                    <h3 className="text-xl md:text-2xl font-bold text-primary-green">
                       {selectedGalleryBranch === 'Group Home 1' 
                         ? '16937 SE Harrison St Portland OR 97233'
                         : '2749 SE 170th Ave Portland OR 97236'} 
