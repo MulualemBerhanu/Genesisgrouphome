@@ -1124,27 +1124,27 @@ export default function Home() {
                   className="bg-white rounded-xl p-6 max-w-7xl w-full mx-auto relative"
                   onClick={e => e.stopPropagation()}
                 >
-                  {/* Close Button */}
-                  <button
-                    onClick={() => {
-                      setIsGalleryLightboxOpen(false);
-                      setCurrentPage(1);
-                    }}
-                    className="absolute top-4 right-4 bg-red-500 p-2 rounded-full text-white hover:bg-red-600 transition-all duration-200 hover:rotate-90 transform z-[110]"
-                  >
-                    <svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" />
-                    </svg>
-                  </button>
-
-                  {/* Gallery Title */}
-                  <div className="text-center mb-6 mt-4">
-                    <h3 className="text-xl md:text-2xl font-bold text-primary-green">
-                      {selectedGalleryBranch === 'Group Home 1' 
-                        ? '16937 SE Harrison St Portland OR 97233'
-                        : '2749 SE 170th Ave Portland OR 97236'} 
-                      - Page {currentPage}
-                    </h3>
+                  {/* Gallery Title with Close Button */}
+                  <div className="relative text-center mb-6 mt-4 flex items-center justify-between">
+                    <div className="flex-1">
+                      <h3 className="text-xl md:text-2xl font-bold text-primary-green">
+                        {selectedGalleryBranch === 'Group Home 1' 
+                          ? '16937 SE Harrison St Portland OR 97233'
+                          : '2749 SE 170th Ave Portland OR 97236'} 
+                        - Page {currentPage}
+                      </h3>
+                    </div>
+                    <button
+                      onClick={() => {
+                        setIsGalleryLightboxOpen(false);
+                        setCurrentPage(1);
+                      }}
+                      className="ml-4 bg-red-500 p-2 rounded-full text-white hover:bg-red-600 transition-all duration-200 hover:rotate-90 transform"
+                    >
+                      <svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" />
+                      </svg>
+                    </button>
                   </div>
 
                   {/* Image Grid */}
