@@ -53,7 +53,7 @@ export default function Home() {
   // Number of images for each branch
   const totalImages = {
     'Group Home 1': 24,
-    'Group Home 2': 16
+    'Group Home 2': 15
   } as const;
 
   const [currentPage, setCurrentPage] = useState(1);
@@ -595,7 +595,7 @@ export default function Home() {
           <div className="absolute inset-0 bg-gradient-to-r from-primary-green/30 to-transparent"></div>
           
           {/* Animated Patterns */}
-          <div className="absolute inset-0 bg-[url('/images/pattern.png')] opacity-5">
+          <div className="absolute inset-0 bg-gradient-to-br from-primary-green/5 to-primary-yellow/5">
             <motion.div
               className="w-full h-full"
               animate={{
