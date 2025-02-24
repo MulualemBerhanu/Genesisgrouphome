@@ -10,8 +10,8 @@ const nextConfig = {
       },
     ],
   },
-  basePath: '/Genesisgrouphome', // Replace with your repository name
-  assetPrefix: '/Genesisgrouphome/', // Replace with your repository name
+  basePath: process.env.NODE_ENV === 'production' ? '/Genesisgrouphome' : '',
+  assetPrefix: process.env.NODE_ENV === 'production' ? '/Genesisgrouphome/' : '',
   trailingSlash: true,
 }
 

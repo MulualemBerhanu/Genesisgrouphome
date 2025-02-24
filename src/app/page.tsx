@@ -761,7 +761,7 @@ export default function Home() {
         {/* About Us Section */}
         <section id="about" className="section bg-primary-yellow relative overflow-hidden">
           {/* Background Pattern */}
-          <div className="absolute inset-0 bg-[url('/images/pattern.png')] opacity-5" />
+          <div className="absolute inset-0 bg-gradient-to-br from-primary-green/10 to-primary-yellow/20" />
           
           <div className="container">
             {/* Section Header */}
