@@ -578,18 +578,11 @@ export default function Home() {
       </motion.header>
 
       {/* Hero Section */}
-      <section className="relative min-h-screen overflow-hidden pt-[160px] md:pt-0">
+      <section className="relative min-h-screen overflow-hidden pt-[160px] md:pt-0 hero-background">
         {/* Parallax Background Layers */}
         <div className="fixed inset-0 z-0">
           {/* Main Background Image */}
-          <Image
-            src="/images/heroImage.png"
-            alt="Caring hands"
-            fill
-            className="object-cover transform scale-110 transition-transform duration-1000"
-            priority
-          />
-          
+          {/* Removed the Image component as it's now a CSS background */}
           {/* Gradient Overlays */}
           <div className="absolute inset-0 bg-gradient-to-t from-black/80 via-black/40 to-transparent"></div>
           <div className="absolute inset-0 bg-gradient-to-r from-primary-green/30 to-transparent"></div>
