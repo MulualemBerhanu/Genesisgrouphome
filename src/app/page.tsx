@@ -895,7 +895,7 @@ export default function Home() {
         {/* Services Section */}
         <section id="services" className="section relative overflow-hidden">
           {/* Background Pattern */}
-          <div className="absolute inset-0 bg-[url('/images/pattern.png')] opacity-5" />
+          <div className="absolute inset-0 bg-gradient-to-br from-primary-green/5 to-primary-yellow/5 opacity-30" />
           
           <div className="container relative">
             {/* Section Header */}
@@ -988,7 +988,7 @@ export default function Home() {
         {/* Our Community Section */}
         <section id="community" className="section bg-primary-yellow relative overflow-hidden">
           {/* Background Pattern */}
-          <div className="absolute inset-0 bg-[url('/images/pattern.png')] opacity-5" />
+          <div className="absolute inset-0 bg-gradient-to-br from-primary-green/5 to-primary-yellow/5 opacity-30" />
           
           <div className="container">
             {/* Section Header */}
