@@ -3,13 +3,8 @@ const nextConfig = {
   output: 'export',  // Required for static site generation
   images: {
     unoptimized: true, // Required for static site generation
-    domains: ['*'], // Allow images from any domain
-    remotePatterns: [
-      {
-        protocol: 'https',
-        hostname: '**',
-      },
-    ],
+    loader: 'custom',
+    loaderFile: './src/utils/imageLoader.js',
   },
   trailingSlash: true,
 }
