@@ -1399,7 +1399,7 @@ export default function Home() {
       {/* Footer */}
       <footer className="bg-primary-green text-white py-12">
         <div className="container">
-          <div className="grid md:grid-cols-3 gap-8">
+          <div className="grid md:grid-cols-4 gap-8">
             <div>
               <h3 className="text-xl font-bold mb-4 text-white">Genesis Group Home LLC</h3>
               <p>Professional home care services you can trust.</p>
@@ -1433,6 +1433,28 @@ export default function Home() {
                   </div>
                 </div>
               </ul>
+            </div>
+            <div>
+              <h4 className="text-lg font-bold mb-4 text-white">Website Developed By</h4>
+              <div className="space-y-3">
+                <ul className="space-y-2 text-sm">
+                  <li>
+                    <a href="mailto:berhanumulualemadisu@gmail.com" 
+                       className="hover:text-primary-yellow transition-colors">
+                      berhanumulualemadisu@gmail.com
+                    </a>
+                  </li>
+                  <li>
+                    <a href="tel:+16414818560" 
+                       className="hover:text-primary-yellow transition-colors">
+                      (641) 481-8560
+                    </a>
+                  </li>
+                </ul>
+                <p className="text-xs mt-2 text-white/80">
+                  Professional web development and software solutions
+                </p>
+              </div>
             </div>
           </div>
         </div>
