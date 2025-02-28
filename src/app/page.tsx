@@ -1399,7 +1399,7 @@ export default function Home() {
       {/* Footer */}
       <footer className="bg-primary-green text-white py-12">
         <div className="container">
-          <div className="grid md:grid-cols-4 gap-8">
+          <div className="grid md:grid-cols-3 gap-8">
             <div>
               <h3 className="text-xl font-bold mb-4 text-white">Genesis Group Home LLC</h3>
               <p>Professional home care services you can trust.</p>
@@ -1420,19 +1420,19 @@ export default function Home() {
                 <li>Phone: (503) 740-1256</li>
                 <li>Email: Genesisghpdx@gmail.com</li>
                 <li>Alternative Email: Genesisgrouphomepdx@gmail.com</li>
-                <li className="pt-2 border-t border-white/20">Location 1:</li>
-                <li>16937 SE Harrison St</li>
-                <li>Portland, OR 97233</li>
-                <li className="pt-2 border-t border-white/20">Location 2:</li>
-                <li>2749 SE 170th Ave</li>
-                <li>Portland, OR 97236</li>
+                <div className="grid grid-cols-2 gap-4 mt-4">
+                  <div>
+                    <li className="font-semibold border-b border-white/20 pb-1">Location 1:</li>
+                    <li>16937 SE Harrison St</li>
+                    <li>Portland, OR 97233</li>
+                  </div>
+                  <div>
+                    <li className="font-semibold border-b border-white/20 pb-1">Location 2:</li>
+                    <li>2749 SE 170th Ave</li>
+                    <li>Portland, OR 97236</li>
+                  </div>
+                </div>
               </ul>
-            </div>
-            <div>
-              <h4 className="text-lg font-bold mb-4 text-white">Follow Us</h4>
-              <div className="flex space-x-4">
-                {/* Social media icons would go here */}
-              </div>
             </div>
           </div>
         </div>
