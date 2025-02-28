@@ -584,7 +584,7 @@ export default function Home() {
       </motion.header>
 
       {/* Hero Section */}
-      <section className="relative min-h-screen overflow-hidden pt-[160px] md:pt-0 hero-background">
+      <section className="relative min-h-screen overflow-hidden pt-[120px] md:pt-[160px] hero-background">
         {/* Parallax Background Layers */}
         <div className="fixed inset-0 z-0">
           {/* Main Background Image */}
@@ -610,11 +610,11 @@ export default function Home() {
         </div>
 
         {/* Content Wrapper */}
-        <div className="relative z-10 h-full">
+        <div className="relative z-10 h-full flex flex-col justify-between">
           <div className="container h-full flex flex-col">
             {/* Top Content */}
             <motion.div 
-              className="flex-1 flex items-center justify-center pt-12 md:pt-12 pb-32 md:pb-16"
+              className="flex-1 flex items-center justify-center pt-8 md:pt-12 pb-16 md:pb-32"
               initial={{ opacity: 0, y: 20 }}
               animate={{ opacity: 1, y: 0 }}
               transition={{ duration: 0.8 }}
@@ -691,9 +691,9 @@ export default function Home() {
             </motion.div>
 
             {/* Bottom Content */}
-            <div className="pb-32 mt-8 md:mt-0">
+            <div className="pb-16 md:pb-32 mt-0">
               <motion.div
-                className="grid grid-cols-1 md:grid-cols-3 gap-6 max-w-4xl mx-auto px-4 mt-0 md:mt-0 relative z-10"
+                className="grid grid-cols-1 md:grid-cols-3 gap-4 md:gap-6 max-w-4xl mx-auto px-4 relative z-10"
                 initial={{ opacity: 0, y: 20 }}
                 animate={{ opacity: 1, y: 0 }}
                 transition={{ duration: 0.8, delay: 0.6 }}
@@ -717,15 +717,15 @@ export default function Home() {
                 ].map((feature, index) => (
                   <motion.div
                     key={index}
-                    className="bg-white/10 backdrop-blur-sm rounded-xl p-6 text-white border border-white/10"
+                    className="bg-white/10 backdrop-blur-sm rounded-xl p-4 md:p-6 text-white border border-white/10"
                     whileHover={{ scale: 1.02, backgroundColor: 'rgba(255, 255, 255, 0.15)' }}
                     initial={{ opacity: 0, y: 20 }}
                     animate={{ opacity: 1, y: 0 }}
                     transition={{ duration: 0.5, delay: 0.7 + index * 0.1 }}
                   >
-                    <span className="text-4xl mb-4 block">{feature.icon}</span>
-                    <h3 className="text-xl font-bold mb-2 text-primary-yellow drop-shadow-[0_2px_2px_rgba(0,0,0,0.5)]">{feature.title}</h3>
-                    <p className="text-white/70 text-sm">{feature.description}</p>
+                    <span className="text-3xl md:text-4xl mb-3 md:mb-4 block">{feature.icon}</span>
+                    <h3 className="text-lg md:text-xl font-bold mb-2 text-primary-yellow drop-shadow-[0_2px_2px_rgba(0,0,0,0.5)]">{feature.title}</h3>
+                    <p className="text-white/70 text-xs md:text-sm">{feature.description}</p>
                   </motion.div>
                 ))}
               </motion.div>
@@ -734,24 +734,24 @@ export default function Home() {
 
           {/* Scroll Indicator */}
           <motion.div
-            className="absolute bottom-8 left-1/2 -translate-x-1/2 flex flex-col items-center gap-2"
+            className="absolute bottom-4 md:bottom-8 left-1/2 -translate-x-1/2 flex flex-col items-center gap-2"
             initial={{ opacity: 0 }}
             animate={{ opacity: 1 }}
             transition={{ delay: 1.2 }}
           >
             <motion.div
-              className="w-6 h-10 border-2 border-white/30 rounded-full p-1"
+              className="w-5 h-8 md:w-6 md:h-10 border-2 border-white/30 rounded-full p-1"
               initial={{ y: 0 }}
               animate={{ y: [0, 5, 0] }}
               transition={{ duration: 1.5, repeat: Infinity }}
             >
               <motion.div
-                className="w-1.5 h-1.5 bg-white rounded-full"
-                animate={{ y: [0, 20, 0] }}
+                className="w-1 md:w-1.5 h-1 md:h-1.5 bg-white rounded-full"
+                animate={{ y: [0, 15, 0] }}
                 transition={{ duration: 1.5, repeat: Infinity }}
               />
             </motion.div>
-            <span className="text-white/50 text-sm">Scroll to explore</span>
+            <span className="text-white/50 text-xs md:text-sm">Scroll to explore</span>
           </motion.div>
         </div>
       </section>

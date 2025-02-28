@@ -51,5 +51,16 @@
   background-size: cover;
   background-position: center;
   background-repeat: no-repeat;
-  height: 100vh; /* Adjust as needed */
+  min-height: 100vh; /* Changed from height to min-height */
+  position: relative; /* Added to ensure proper stacking context */
+  display: flex;
+  flex-direction: column;
+}
+
+/* Add responsive padding for mobile */
+@media (max-width: 768px) {
+  .hero-background {
+    min-height: calc(100vh + 4rem); /* Add extra space on mobile */
+    padding-bottom: 6rem; /* Add more padding at the bottom on mobile */
+  }
 }
