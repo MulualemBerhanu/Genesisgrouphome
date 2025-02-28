@@ -79,7 +79,7 @@ export default function Home() {
 
   useEffect(() => {
     // Set hero background image using getImagePath
-    const heroImagePath = getImagePath('/images/Group Home 2/image1.jpg');
+    const heroImagePath = getImagePath('/images/Group Home 2/herobg.jpg');
     document.documentElement.style.setProperty('--hero-bg-image', `url('${heroImagePath}')`);
   }, []);
 
@@ -1407,10 +1407,11 @@ export default function Home() {
             <div>
               <h4 className="text-lg font-bold mb-4 text-white">Quick Links</h4>
               <ul className="space-y-2">
-                <li><Link href="#" className="hover:text-primary-yellow">Home</Link></li>
-                <li><Link href="#about" className="hover:text-primary-yellow">About Us</Link></li>
-                <li><Link href="#services" className="hover:text-primary-yellow">Services</Link></li>
-                <li><Link href="#contact" className="hover:text-primary-yellow">Contact</Link></li>
+                <li><a href="#" onClick={() => scrollToTop()} className="hover:text-primary-yellow transition-colors">Home</a></li>
+                <li><a href="#about" className="hover:text-primary-yellow transition-colors">About Us</a></li>
+                <li><a href="#services" className="hover:text-primary-yellow transition-colors">Services</a></li>
+                <li><a href="#community" className="hover:text-primary-yellow transition-colors">Our Community</a></li>
+                <li><a href="#contact" className="hover:text-primary-yellow transition-colors">Contact</a></li>
               </ul>
             </div>
             <div>
@@ -1419,7 +1420,12 @@ export default function Home() {
                 <li>Phone: (503) 740-1256</li>
                 <li>Email: Genesisghpdx@gmail.com</li>
                 <li>Alternative Email: Genesisgrouphomepdx@gmail.com</li>
-                <li>Address: 123 Care Street, Portland, OR</li>
+                <li className="pt-2 border-t border-white/20">Location 1:</li>
+                <li>16937 SE Harrison St</li>
+                <li>Portland, OR 97233</li>
+                <li className="pt-2 border-t border-white/20">Location 2:</li>
+                <li>2749 SE 170th Ave</li>
+                <li>Portland, OR 97236</li>
               </ul>
             </div>
             <div>
