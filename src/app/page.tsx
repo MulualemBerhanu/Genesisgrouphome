@@ -77,6 +77,12 @@ export default function Home() {
     return () => window.removeEventListener('resize', checkMobile);
   }, []);
 
+  useEffect(() => {
+    // Set hero background image using getImagePath
+    const heroImagePath = getImagePath('/images/Group Home 2/image1.jpg');
+    document.documentElement.style.setProperty('--hero-bg-image', `url('${heroImagePath}')`);
+  }, []);
+
   const scrollToTop = () => {
     window.scrollTo({ top: 0, behavior: 'smooth' });
   };
@@ -842,7 +848,7 @@ export default function Home() {
                 <div className="grid grid-cols-2 gap-6">
                   <div className="space-y-6">
                     <Image 
-                      src="/images/Group Home 2/about1.jpg" 
+                      src={getImagePath('/images/Group Home 2/about1.jpg')}
                       alt="Caring moment" 
                       width={400} 
                       height={400} 
@@ -859,7 +865,7 @@ export default function Home() {
                       <p className="text-sm text-gray-600">Expert healthcare professionals dedicated to your care</p>
                     </div>
                     <Image
-                      src="/images/Group Home 2/about2.jpg" 
+                      src={getImagePath('/images/Group Home 2/about2.jpg')}
                       alt="Home care" 
                       width={400} 
                       height={400} 

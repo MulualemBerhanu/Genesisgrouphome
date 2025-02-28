@@ -6,6 +6,7 @@
   --primary-green: #006400;
   --primary-yellow: #FFFDE7;
   --primary-beige: #FAF3E0;
+  --hero-bg-image: '';
   scroll-behavior: smooth;
 }
 
@@ -46,7 +47,7 @@
 }
 
 .hero-background {
-  background-image: url('/images/Group Home 2/image1.jpg');
+  background-image: var(--hero-bg-image);
   background-size: cover;
   background-position: center;
   background-repeat: no-repeat;
