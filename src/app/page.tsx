@@ -400,6 +400,8 @@ export default function Home() {
                 </svg>
               </span>
               <div className="flex flex-col md:flex-row items-center md:gap-4">
+                <span className="hover:text-primary-yellow transition-colors text-xs md:text-sm">get@genesisgrouphome.com</span>
+                <span className="hidden md:block text-primary-yellow">|</span>
                 <span className="hover:text-primary-yellow transition-colors text-xs md:text-sm">Genesisghpdx@gmail.com</span>
                 <span className="hidden md:block text-primary-yellow">|</span>
                 <span className="hover:text-primary-yellow transition-colors text-xs md:text-sm">Genesisgrouphomepdx@gmail.com</span>
@@ -1243,6 +1245,7 @@ export default function Home() {
                         </div>
                         <div>
                           <h4 className="font-medium text-gray-800">Email</h4>
+                          <p className="text-gray-600">get@genesisgrouphome.com</p>
                           <p className="text-gray-600">Genesisghpdx@gmail.com</p>
                           <p className="text-gray-600">Genesisgrouphomepdx@gmail.com</p>
                         </div>
@@ -1418,8 +1421,9 @@ export default function Home() {
               <h4 className="text-lg font-bold mb-4 text-white">Contact Info</h4>
               <ul className="space-y-2">
                 <li>Phone: (503) 740-1256</li>
-                <li>Email: Genesisghpdx@gmail.com</li>
-                <li>Alternative Email: Genesisgrouphomepdx@gmail.com</li>
+                <li>Email: get@genesisgrouphome.com</li>
+                <li>Alternative Email 1: Genesisghpdx@gmail.com</li>
+                <li>Alternative Email 2: Genesisgrouphomepdx@gmail.com</li>
                 <div className="grid grid-cols-2 gap-4 mt-4">
                   <div>
                     <li className="font-semibold border-b border-white/20 pb-1">Location 1:</li>
