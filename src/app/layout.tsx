@@ -19,6 +19,10 @@ const merriweather = Merriweather({
 export const metadata: Metadata = {
   title: "Genesis Group Home LLC - Professional Home Care Services",
   description: "Providing compassionate and professional home care services with a focus on quality of life and personalized care plans.",
+  icons: {
+    icon: '/images/icon.png',
+    apple: '/images/icon.png',
+  },
 };
 
 export default function RootLayout({
