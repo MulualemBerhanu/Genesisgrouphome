@@ -402,9 +402,9 @@ export default function Home() {
               <div className="flex flex-col md:flex-row items-center md:gap-4">
                 <span className="hover:text-primary-yellow transition-colors text-xs md:text-sm">get@genesisgrouphome.com</span>
                 <span className="hidden md:block text-primary-yellow">|</span>
-                <span className="hover:text-primary-yellow transition-colors text-xs md:text-sm">Genesisghpdx@gmail.com</span>
+                <span className="hidden md:inline hover:text-primary-yellow transition-colors text-xs md:text-sm">Genesisghpdx@gmail.com</span>
                 <span className="hidden md:block text-primary-yellow">|</span>
-                <span className="hover:text-primary-yellow transition-colors text-xs md:text-sm">Genesisgrouphomepdx@gmail.com</span>
+                <span className="hidden md:inline hover:text-primary-yellow transition-colors text-xs md:text-sm">Genesisgrouphomepdx@gmail.com</span>
               </div>
             </motion.div>
           </div>
