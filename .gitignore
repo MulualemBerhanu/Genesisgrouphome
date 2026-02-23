@@ -24,6 +24,12 @@
 .DS_Store
 *.pem
 
+# local ssh keys (keep in ~/.ssh, never commit)
+/mac pro ssh now
+/mac pro ssh now.pub
+/sshKeyForGitHub
+/sshKeyForGitHub.pub
+
 # debug
 npm-debug.log*
 yarn-debug.log*
