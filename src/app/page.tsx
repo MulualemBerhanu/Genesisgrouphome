@@ -1402,14 +1402,20 @@ export default function Home() {
       {/* Footer */}
       <footer className="bg-primary-green text-white py-12">
         <div className="container">
-          <div className="grid md:grid-cols-4 gap-8">
-            <div>
-              <h3 className="text-xl font-bold mb-4 text-white">Genesis Group Home LLC</h3>
-              <p>Professional home care services you can trust.</p>
+          <div className="grid gap-10 md:grid-cols-3">
+            <div className="space-y-4">
+              <h3 className="text-2xl font-bold text-white">Genesis Group Home LLC</h3>
+              <p className="text-white/90">
+                Professional home care services you can trust.
+              </p>
+              <div className="space-y-1 text-sm text-white/90">
+                <p>Call anytime: (503) 740-1256</p>
+                <p>Email: get@genesisgrouphome.com</p>
+              </div>
             </div>
             <div>
               <h4 className="text-lg font-bold mb-4 text-white">Quick Links</h4>
-              <ul className="space-y-2">
+              <ul className="space-y-2 text-sm">
                 <li><a href="#" onClick={() => scrollToTop()} className="hover:text-primary-yellow transition-colors">Home</a></li>
                 <li><a href="#about" className="hover:text-primary-yellow transition-colors">About Us</a></li>
                 <li><a href="#services" className="hover:text-primary-yellow transition-colors">Services</a></li>
@@ -1418,48 +1424,24 @@ export default function Home() {
               </ul>
             </div>
             <div>
-              <h4 className="text-lg font-bold mb-4 text-white">Contact Info</h4>
-              <ul className="space-y-2">
-                <li>Phone: (503) 740-1256</li>
-                <li>Email: get@genesisgrouphome.com</li>
-                <li>Alternative Email 1: Genesisghpdx@gmail.com</li>
-                <li>Alternative Email 2: Genesisgrouphomepdx@gmail.com</li>
-                <div className="grid grid-cols-2 gap-4 mt-4">
-                  <div>
-                    <li className="font-semibold border-b border-white/20 pb-1">Location 1:</li>
-                    <li>16937 SE Harrison St</li>
-                    <li>Portland, OR 97233</li>
-                  </div>
-                  <div>
-                    <li className="font-semibold border-b border-white/20 pb-1">Location 2:</li>
-                    <li>2749 SE 170th Ave</li>
-                    <li>Portland, OR 97236</li>
-                  </div>
+              <h4 className="text-lg font-bold mb-4 text-white">Locations</h4>
+              <div className="space-y-4 text-sm text-white/90">
+                <div>
+                  <p className="font-semibold border-b border-white/20 pb-1">Location 1</p>
+                  <p>16937 SE Harrison St</p>
+                  <p>Portland, OR 97233</p>
                 </div>
-              </ul>
-            </div>
-            <div>
-              <h4 className="text-lg font-bold mb-4 text-white">Website Developed By</h4>
-              <div className="space-y-3">
-                <ul className="space-y-2 text-sm">
-                  <li>
-                    <a href="mailto:berhanumulualemadisu@gmail.com" 
-                       className="hover:text-primary-yellow transition-colors">
-                      berhanumulualemadisu@gmail.com
-                    </a>
-                  </li>
-                  <li>
-                    <a href="tel:+16414818560" 
-                       className="hover:text-primary-yellow transition-colors">
-                      (641) 481-8560
-                    </a>
-                  </li>
-                </ul>
-                <p className="text-xs mt-2 text-white/80">
-                  Professional web development and software solutions
-                </p>
+                <div>
+                  <p className="font-semibold border-b border-white/20 pb-1">Location 2</p>
+                  <p>2749 SE 170th Ave</p>
+                  <p>Portland, OR 97236</p>
+                </div>
               </div>
             </div>
+          </div>
+          <div className="mt-10 border-t border-white/20 pt-6 text-sm text-white/80 flex flex-col gap-2 md:flex-row md:items-center md:justify-between">
+            <p>© {new Date().getFullYear()} Genesis Group Home LLC. All rights reserved.</p>
+            <p>Serving families with dignity, respect, and care.</p>
           </div>
         </div>
       </footer>
